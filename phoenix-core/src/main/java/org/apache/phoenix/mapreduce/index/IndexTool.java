@@ -488,7 +488,9 @@ public class IndexTool extends Configured implements Tool {
             final String dataTable = cmdLine.getOptionValue(DATA_TABLE_OPTION.getOpt());
             final String indexTable = cmdLine.getOptionValue(INDEX_TABLE_OPTION.getOpt());
             final boolean isPartialBuild = cmdLine.hasOption(PARTIAL_REBUILD_OPTION.getOpt());
-            final String qDataTable = SchemaUtil.getQualifiedTableName(schemaName, dataTable);
+            //final String qDataTable = SchemaUtil.getQualifiedTableName(schemaName, dataTable);
+            //added by zhaowei 20170721,修复phoenix表名为小写，批量建立索引失败
+            final String qDataTable=SchemaUtil.getTableName(schemaName, dataTable);
             boolean useDirectApi = cmdLine.hasOption(DIRECT_API_OPTION.getOpt());
             String basePath=cmdLine.getOptionValue(OUTPUT_PATH_OPTION.getOpt());
             boolean isForeground = cmdLine.hasOption(RUN_FOREGROUND_OPTION.getOpt());
@@ -522,7 +524,8 @@ public class IndexTool extends Configured implements Tool {
 				fs.delete(outputPath, true);
 			}
             
-            Job job = new JobFactory(connection, configuration, outputPath).getJob(schemaName, indexTable, dataTable,
+			//added by zhaowei 20170721,修复phoenix表名为小写，批量建立索引失败
+            Job job = new JobFactory(connection, configuration, outputPath).getJob(schemaName, indexTable, "\""+dataTable+"\"",
                     useDirectApi, isPartialBuild, useSnapshot);
             if (!isForeground && useDirectApi) {
                 LOG.info("Running Index Build in Background - Submit async and exit");
@@ -595,7 +598,9 @@ public class IndexTool extends Configured implements Tool {
             final String indexTable) throws SQLException {
         final DatabaseMetaData dbMetaData = connection.getMetaData();
         final String schemaName = SchemaUtil.getSchemaNameFromFullName(masterTable);
-        final String tableName = SchemaUtil.normalizeIdentifier(SchemaUtil.getTableNameFromFullName(masterTable));
+        //final String tableName = SchemaUtil.normalizeIdentifier(SchemaUtil.getTableNameFromFullName(masterTable));
+        //added by zhaowei 20170721,修复phoenix表名为小写，批量建立索引失败
+        final String tableName = SchemaUtil.getTableNameFromFullName(masterTable);
 
         ResultSet rs = null;
         try {

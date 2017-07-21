@@ -361,7 +361,8 @@ public class IndexPredicateAnalyzer {
         }
 
         GenericUDF genericUDF = expr.getGenericUDF();
-        if (!(genericUDF instanceof GenericUDFBaseCompare)) {
+        //added by zhaowei 20170721 ,增加like的处理方式，处理方式和equal一样
+        if (!(genericUDF instanceof GenericUDFBaseCompare)&&!genericUDF.getUdfName().equals("like")) {
             // 2015-10-22 Added by JeongMin Ju : Processing Between/In Operator
             if (genericUDF instanceof GenericUDFBetween) {
                 // In case of not between, The value of first element of nodeOutputs is true.
@@ -517,7 +518,9 @@ public class IndexPredicateAnalyzer {
         // apply Null
         analyzer.addComparisonOp("org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNotNull");
         // apply Not Null
-
+      
+        //added by zhaowei 20170721 ,增加like表达式
+        analyzer.addComparisonOp("like");
         return analyzer;
     }
 }

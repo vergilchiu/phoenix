@@ -17,6 +17,11 @@
  */
 package org.apache.phoenix.hive;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -35,8 +40,8 @@ import org.apache.hadoop.hive.ql.metadata.InputEstimator;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.ql.plan.TableDesc;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hadoop.hive.serde2.AbstractSerDe;
 import org.apache.hadoop.hive.serde2.Deserializer;
-import org.apache.hadoop.hive.serde2.SerDe;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
@@ -46,11 +51,6 @@ import org.apache.phoenix.hive.mapreduce.PhoenixInputFormat;
 import org.apache.phoenix.hive.mapreduce.PhoenixOutputFormat;
 import org.apache.phoenix.hive.ppd.PhoenixPredicateDecomposer;
 import org.apache.phoenix.mapreduce.util.PhoenixConfigurationUtil;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * This class manages all the Phoenix/Hive table initial configurations and SerDe Election
@@ -230,7 +230,8 @@ public class PhoenixStorageHandler extends DefaultStorageHandler implements
     }
 
     @Override
-    public Class<? extends SerDe> getSerDeClass() {
+    //edited by zhaowei 20170721,修改老版本hive获取序列化反序列化类名
+    public Class<? extends AbstractSerDe> getSerDeClass() {
         return PhoenixSerDe.class;
     }
 

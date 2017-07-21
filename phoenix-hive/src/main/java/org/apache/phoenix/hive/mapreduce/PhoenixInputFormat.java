@@ -17,8 +17,6 @@
  */
 package org.apache.phoenix.hive.mapreduce;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Statement;
@@ -26,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -40,7 +39,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.util.RegionSizeCalculator;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.ql.exec.Utilities;
+import org.apache.hadoop.hive.ql.exec.SerializationUtilities;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
 import org.apache.hadoop.hive.ql.plan.TableScanDesc;
 import org.apache.hadoop.hive.serde.serdeConstants;
@@ -68,6 +67,9 @@ import org.apache.phoenix.jdbc.PhoenixStatement;
 import org.apache.phoenix.mapreduce.util.PhoenixConfigurationUtil;
 import org.apache.phoenix.query.KeyRange;
 import org.apache.phoenix.util.PhoenixRuntime;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 /**
  * Custom InputFormat to feed into Hive
@@ -98,12 +100,14 @@ public class PhoenixInputFormat<T extends DBWritable> implements InputFormat<Wri
                     executionEngine);
         }
 
-        if (PhoenixStorageHandlerConstants.MR.equals(executionEngine)) {
+        //added by zhaowei 20170721,增加spark客户端判断
+        if (PhoenixStorageHandlerConstants.MR.equals(executionEngine)||PhoenixStorageHandlerConstants.SPARK.equals(executionEngine)) {
             List<IndexSearchCondition> conditionList = null;
             String filterExprSerialized = jobConf.get(TableScanDesc.FILTER_EXPR_CONF_STR);
             if (filterExprSerialized != null) {
                 ExprNodeGenericFuncDesc filterExpr =
-                        Utilities.deserializeExpression(filterExprSerialized);
+                		//edited by zhaowei 20170721 修改老版本的序列化反序列化工具
+                		SerializationUtilities.deserializeExpression(filterExprSerialized);
                 PhoenixPredicateDecomposer predicateDecomposer =
                         PhoenixPredicateDecomposer.create(Arrays.asList(jobConf.get(serdeConstants.LIST_COLUMNS).split(",")));
                 predicateDecomposer.decomposePredicate(filterExpr);

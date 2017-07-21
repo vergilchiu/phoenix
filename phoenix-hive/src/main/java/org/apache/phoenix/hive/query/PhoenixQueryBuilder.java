@@ -705,6 +705,8 @@ public class PhoenixQueryBuilder {
         LESS_THAN_OR_EQUAL_TO("UDFOPEqualOrLessThan", "<="),
         LESS_THAN("UDFOPLessThan", "<"),
         NOT_EQUAL("UDFOPNotEqual", "!="),
+        // added by zhaowei 20170721,表达式增加like
+        LIKE("like","like"),
         BETWEEN("GenericUDFBetween", "between", JOINER_AND, true) {
             public boolean checkCondition(IndexSearchCondition condition) {
                 return condition.getConstantDescs() != null;
