@@ -26,7 +26,7 @@ Phoenix4.11-hbase1.2 修改记录
 
 |序号|项目|类|方法|行号|修改说明| 
 |---|---|---|---|---|---|  
-|201707-01|Phoenix|pom|-|73|修改hive的版本到2.2.0-SNAPSHOT|
+|201707-01|Phoenix|pom|-|73|修改hive的版本到2.3.0|
 |201707-02|Phoenix-hive|IndexPredicateAnalyzer|analyzeExpr,createAnalyzer|364,523|where条件增加like表达式处理方式|
 |201707-03|Phoenix-hive|PhoenixInputFormat|getSplits|108|修改老版本的序列化反序列化工具|
 |201707-04|Phoenix-hive|PhoenixQueryBUilder|Expression|709|增加like表达式|

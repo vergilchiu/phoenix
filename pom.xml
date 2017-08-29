@@ -70,7 +70,7 @@
 
     <!-- Dependency versions -->
     <commons-cli.version>1.2</commons-cli.version>
-    <hive.version>2.2.0-SNAPSHOT</hive.version>
+    <hive.version>2.3.0</hive.version>
     <hadoop.version>2.7.1</hadoop.version>
     <pig.version>0.13.0</pig.version>
     <jackson.version>1.9.2</jackson.version>
